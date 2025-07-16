@@ -78,17 +78,68 @@ export function OfficialsReportForm() {
 
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
+    
+    // Create email content
+    const emailSubject = `Officials Report - ${data.subjectOfReport}`;
+    const emailBody = `
+Officials Report
+
+EMPLOYEE INFORMATION:
+• Employee Name: ${data.employeeName}
+• Employee Number: ${data.employeeNumber}
+• Garage: ${data.garage}
+• Route: ${data.route}
+
+REPORT DETAILS:
+• Date of Report: ${data.dateOfReport ? format(data.dateOfReport, "PPP") : 'N/A'}
+• Running Number: ${data.runningNumber}
+• Date of Incident: ${data.dateOfIncident ? format(data.dateOfIncident, "PPP") : 'N/A'}
+• Duty Number: ${data.dutyNumber}
+• Time of Incident: ${data.timeOfIncident}
+• Trip Number: ${data.tripNumber}
+
+LOCATION INFORMATION:
+• Location: ${data.location}
+• Fleet Number: ${data.fleetNumber}
+• Travelling From: ${data.travellingFrom}
+• Destination: ${data.destination}
+
+INCIDENT DETAILS:
+• Subject of Report: ${data.subjectOfReport}
+• Details of Incident: 
+${data.detailsOfIncident}
+
+CONTROLLER INFORMATION:
+• Controller's Name: ${data.controllerName}
+• Extension Number: ${data.extensionNumber}
+
+---
+This report was generated via the Officials Report Form
+Generated on: ${new Date().toLocaleString()}
+    `;
+
+    // Open Outlook Web Client
+    const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    window.open(outlookUrl, '_blank');
+
     toast({
       title: "Report Submitted",
-      description: "Your officials report has been successfully submitted.",
+      description: "Your officials report has been prepared and Outlook has been opened to send the email.",
     });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4 max-w-4xl">
-        {/* Header */}
+        {/* Header with Logo */}
         <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/lovable-uploads/4bb6ce72-fbf6-4c79-84b1-875b11f9f3f5.png" 
+              alt="First Bus Logo" 
+              className="h-16 w-auto"
+            />
+          </div>
           <h1 className="text-4xl font-bold text-form-header mb-2">Officials Report</h1>
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </div>
@@ -472,9 +523,9 @@ export function OfficialsReportForm() {
               <Button 
                 type="submit" 
                 size="lg"
-                className="w-full md:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200"
+                className="w-full md:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105"
               >
-                Submit Report
+                Submit Report & Open Outlook
               </Button>
             </div>
 

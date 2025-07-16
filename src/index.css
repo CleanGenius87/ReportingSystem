@@ -9,36 +9,36 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 98%;
-    --foreground: 215 25% 27%;
+    --foreground: 225 15% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 225 15% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 225 15% 20%;
 
-    --primary: 217 91% 60%;
+    --primary: 271 81% 36%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 27%;
+    --secondary: 271 20% 95%;
+    --secondary-foreground: 271 81% 36%;
 
     --muted: 210 40% 95%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 217 91% 95%;
-    --accent-foreground: 217 91% 60%;
+    --accent: 271 81% 95%;
+    --accent-foreground: 271 81% 36%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 214 32% 91%;
     --input: 0 0% 100%;
-    --ring: 217 91% 60%;
+    --ring: 271 81% 36%;
 
     --form-background: 0 0% 100%;
-    --form-section: 217 91% 98%;
-    --form-header: 217 91% 60%;
+    --form-section: 271 81% 98%;
+    --form-header: 271 81% 36%;
     --notice-background: 45 100% 95%;
     --notice-foreground: 45 100% 25%;
 
@@ -62,37 +62,37 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 215 28% 17%;
+    --background: 271 81% 15%;
     --foreground: 210 40% 98%;
 
-    --card: 215 28% 20%;
+    --card: 271 81% 18%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 215 28% 20%;
+    --popover: 271 81% 18%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 271 81% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 25%;
+    --secondary: 271 25% 25%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 25% 25%;
+    --muted: 271 25% 25%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 91% 25%;
-    --accent-foreground: 217 91% 90%;
+    --accent: 271 81% 25%;
+    --accent-foreground: 271 81% 90%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 30%;
-    --input: 215 28% 25%;
-    --ring: 217 91% 60%;
+    --border: 271 25% 30%;
+    --input: 271 81% 25%;
+    --ring: 271 81% 60%;
 
-    --form-background: 215 28% 20%;
-    --form-section: 215 25% 25%;
-    --form-header: 217 91% 60%;
+    --form-background: 271 81% 18%;
+    --form-section: 271 25% 25%;
+    --form-header: 271 81% 60%;
     --notice-background: 45 100% 25%;
     --notice-foreground: 45 100% 95%;
     --sidebar-background: 240 5.9% 10%;
