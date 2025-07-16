@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				form: {
+					background: 'hsl(var(--form-background))',
+					section: 'hsl(var(--form-section))',
+					header: 'hsl(var(--form-header))'
+				},
+				notice: {
+					background: 'hsl(var(--notice-background))',
+					foreground: 'hsl(var(--notice-foreground))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

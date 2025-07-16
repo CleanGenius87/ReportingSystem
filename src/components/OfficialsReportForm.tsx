@@ -1,0 +1,492 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
+import { CalendarIcon, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+
+const formSchema = z.object({
+  employeeName: z.string().min(1, "Employee name is required"),
+  employeeNumber: z.string().min(1, "Employee number is required"),
+  garage: z.string().min(1, "Garage is required"),
+  route: z.string().min(1, "Route is required"),
+  dateOfReport: z.date({
+    required_error: "Date of report is required",
+  }),
+  runningNumber: z.string().min(1, "Running number is required"),
+  dateOfIncident: z.date({
+    required_error: "Date of incident is required",
+  }),
+  dutyNumber: z.string().min(1, "Duty number is required"),
+  timeOfIncident: z.string().min(1, "Time of incident is required"),
+  tripNumber: z.string().min(1, "Trip number is required"),
+  location: z.string().min(1, "Location is required"),
+  fleetNumber: z.string().min(1, "Fleet number is required"),
+  travellingFrom: z.string().min(1, "Travelling from is required"),
+  destination: z.string().min(1, "Destination is required"),
+  subjectOfReport: z.string().min(1, "Subject of report is required"),
+  detailsOfIncident: z.string().min(10, "Details must be at least 10 characters"),
+  controllerName: z.string().min(1, "Controller's name is required"),
+  extensionNumber: z.string().min(1, "Extension number is required"),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+const garageOptions = [
+  "Central Garage",
+  "North Garage",
+  "South Garage", 
+  "East Garage",
+  "West Garage"
+];
+
+export function OfficialsReportForm() {
+  const { toast } = useToast();
+  
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      employeeName: "",
+      employeeNumber: "",
+      garage: "",
+      route: "",
+      runningNumber: "",
+      dutyNumber: "",
+      timeOfIncident: "",
+      tripNumber: "",
+      location: "",
+      fleetNumber: "",
+      travellingFrom: "",
+      destination: "",
+      subjectOfReport: "",
+      detailsOfIncident: "",
+      controllerName: "",
+      extensionNumber: "",
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log("Form submitted:", data);
+    toast({
+      title: "Report Submitted",
+      description: "Your officials report has been successfully submitted.",
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-8 px-4 max-w-4xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-form-header mb-2">Officials Report</h1>
+          <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            
+            {/* Employee Information Section */}
+            <Card className="bg-form-background border-border/50 shadow-lg">
+              <CardHeader className="bg-form-section">
+                <CardTitle className="text-xl font-semibold text-foreground">Employee Information</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="employeeName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Employee Name *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="employeeNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Employee Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="garage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Garage *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-input border-border">
+                              <SelectValue placeholder="Select garage" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-popover border-border">
+                            {garageOptions.map((garage) => (
+                              <SelectItem key={garage} value={garage} className="hover:bg-accent">
+                                {garage}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="route"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Route *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Report Details Section */}
+            <Card className="bg-form-background border-border/50 shadow-lg">
+              <CardHeader className="bg-form-section">
+                <CardTitle className="text-xl font-semibold text-foreground">Report Details</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="dateOfReport"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Date of Report *</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-input border-border",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value ? format(field.value, "PPP") : "Select date"}
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date > new Date()}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="runningNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Running Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="dateOfIncident"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Date of Incident *</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-input border-border",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value ? format(field.value, "PPP") : "Select date"}
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date > new Date()}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="dutyNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Duty Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="timeOfIncident"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Time of Incident *</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input 
+                              {...field} 
+                              type="time"
+                              className="bg-input border-border pl-10" 
+                            />
+                            <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="tripNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Trip Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Location Information Section */}
+            <Card className="bg-form-background border-border/50 shadow-lg">
+              <CardHeader className="bg-form-section">
+                <CardTitle className="text-xl font-semibold text-foreground">Location Information</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Location *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="fleetNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Fleet Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="travellingFrom"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Travelling From *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="destination"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Destination *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Incident Details Section */}
+            <Card className="bg-form-background border-border/50 shadow-lg">
+              <CardHeader className="bg-form-section">
+                <CardTitle className="text-xl font-semibold text-foreground">Incident Details</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="subjectOfReport"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Subject of Report *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="detailsOfIncident"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Details of Incident *</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            {...field} 
+                            rows={6}
+                            placeholder="Provide detailed description of the incident..."
+                            className="bg-input border-border resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Controller Information Section */}
+            <Card className="bg-form-background border-border/50 shadow-lg">
+              <CardHeader className="bg-form-section">
+                <CardTitle className="text-xl font-semibold text-foreground">Controller Information</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="controllerName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Controller's Name *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="extensionNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-medium">Extension Number *</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="bg-input border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Submit Button */}
+            <div className="flex justify-center pt-6">
+              <Button 
+                type="submit" 
+                size="lg"
+                className="w-full md:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200"
+              >
+                Submit Report
+              </Button>
+            </div>
+
+            {/* Limited Sharing Notice */}
+            <div className="mt-8 p-4 bg-notice-background border border-notice-foreground/20 rounded-lg">
+              <p className="text-center text-notice-foreground font-semibold">
+                ⚠️ LIMITED SHARING - This report contains sensitive information and should only be shared with authorized personnel.
+              </p>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
+}
