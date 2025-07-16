@@ -44,11 +44,17 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const garageOptions = [
-  "Central Garage",
-  "North Garage",
-  "South Garage", 
-  "East Garage",
-  "West Garage"
+  "Fullwell",
+  "Hounslow",
+  "Hounslow Heath",
+  "Tolworth"
+];
+
+const subjectOptions = [
+  "Failing to follow instructions",
+  "Delaying service",
+  "Failing Headway",
+  "Attitude and demeanour"
 ];
 
 export function OfficialsReportForm() {
@@ -237,32 +243,42 @@ Generated on: ${new Date().toLocaleString()}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">Date of Report *</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full justify-start text-left font-normal bg-input border-border",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? format(field.value, "PPP") : "Select date"}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date > new Date()}
-                              initialFocus
-                              className="p-3 pointer-events-auto"
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <div className="flex gap-2">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "flex-1 justify-start text-left font-normal bg-input border-border",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? format(field.value, "PPP") : "Select date"}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => date > new Date()}
+                                initialFocus
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => field.onChange(new Date())}
+                            className="bg-input border-border hover:bg-accent"
+                          >
+                            Today
+                          </Button>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -288,32 +304,42 @@ Generated on: ${new Date().toLocaleString()}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">Date of Incident *</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full justify-start text-left font-normal bg-input border-border",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? format(field.value, "PPP") : "Select date"}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date > new Date()}
-                              initialFocus
-                              className="p-3 pointer-events-auto"
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <div className="flex gap-2">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "flex-1 justify-start text-left font-normal bg-input border-border",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? format(field.value, "PPP") : "Select date"}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => date > new Date()}
+                                initialFocus
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => field.onChange(new Date())}
+                            className="bg-input border-border hover:bg-accent"
+                          >
+                            Today
+                          </Button>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -450,9 +476,20 @@ Generated on: ${new Date().toLocaleString()}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">Subject of Report *</FormLabel>
-                        <FormControl>
-                          <Input {...field} className="bg-input border-border" />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-input border-border">
+                              <SelectValue placeholder="Select subject of report" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-popover border-border">
+                            {subjectOptions.map((subject) => (
+                              <SelectItem key={subject} value={subject} className="hover:bg-accent">
+                                {subject}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
