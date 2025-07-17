@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon, Clock, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,13 +82,8 @@ export function OfficialsReportForm() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-    
-    // Create email content
-    const emailSubject = `Officials Report - ${data.subjectOfReport}`;
-    const emailBody = `
-Officials Report
+  const createReportContent = (data: FormData) => {
+    return `Officials Report
 
 EMPLOYEE INFORMATION:
 • Employee Name: ${data.employeeName}
@@ -121,16 +116,44 @@ CONTROLLER INFORMATION:
 
 ---
 This report was generated via the Officials Report Form
-Generated on: ${new Date().toLocaleString()}
-    `;
+Generated on: ${new Date().toLocaleString()}`;
+  };
 
-    // Open new email with Officials Report subject
-    const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent("Officials Report")}`;
-    window.open(outlookUrl, '_blank');
+  const onSubmit = (data: FormData) => {
+    console.log("Form submitted:", data);
+    
+    const reportContent = createReportContent(data);
+    
+    // Use mailto to open default email client with pre-filled content
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent("Officials Report")}&body=${encodeURIComponent(reportContent)}`;
+    window.location.href = mailtoUrl;
 
     toast({
-      title: "Report Submitted",
-      description: "Your officials report has been prepared and Outlook has been opened to send the email.",
+      title: "Report Sent",
+      description: "Your email client has been opened with the report details.",
+    });
+  };
+
+  const downloadReport = () => {
+    const formData = form.getValues();
+    const reportContent = createReportContent(formData);
+    
+    // Create a blob with the report content
+    const blob = new Blob([reportContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a temporary link element and trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Officials_Report_${formData.employeeName || 'Draft'}_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    toast({
+      title: "Report Downloaded",
+      description: "The report has been downloaded to your Downloads folder.",
     });
   };
 
@@ -555,14 +578,24 @@ Generated on: ${new Date().toLocaleString()}
               </CardContent>
             </Card>
 
-            {/* Submit Button */}
-            <div className="flex justify-center pt-6">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
               <Button 
                 type="submit" 
                 size="lg"
-                className="w-full md:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105"
+                className="px-12 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105"
               >
-                Submit Report & Open Outlook
+                Send Report
+              </Button>
+              <Button 
+                type="button"
+                onClick={downloadReport}
+                variant="outline"
+                size="lg"
+                className="px-12 py-3 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-semibold text-lg shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-105"
+              >
+                <Download className="mr-2 h-5 w-5" />
+                Download Report
               </Button>
             </div>
 
