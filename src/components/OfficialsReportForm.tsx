@@ -124,8 +124,8 @@ This report was generated via the Officials Report Form
 Generated on: ${new Date().toLocaleString()}
     `;
 
-    // Open Outlook Web Client
-    const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    // Open new email with Officials Report subject
+    const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent("Officials Report")}`;
     window.open(outlookUrl, '_blank');
 
     toast({
