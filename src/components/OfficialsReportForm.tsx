@@ -132,13 +132,27 @@ Generated on: ${new Date().toLocaleString()}`;
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
     
-    // Send email to specific address with blank body
-    const mailtoUrl = `mailto:FWOCC-HubLeaders@firstbuslondon.co.uk?subject=${encodeURIComponent("Officials Report")}`;
+    // Create report content and file
+    const reportContent = createReportContent(data);
+    const currentDate = format(new Date(), "yyyyMMdd");
+    const garageShortcut = getGarageShortcut(data.garage || '');
+    const employeeNumber = data.employeeNumber || 'NoEmpNum';
+    const filename = `${currentDate}-${garageShortcut}-Officials Report-${employeeNumber}.txt`;
+    
+    // Create blob and file for attachment
+    const blob = new Blob([reportContent], { type: 'text/plain' });
+    const file = new File([blob], filename, { type: 'text/plain' });
+    
+    // Create temporary URL for the file
+    const fileUrl = URL.createObjectURL(file);
+    
+    // Send email with attachment
+    const mailtoUrl = `mailto:FWOCC-HubLeaders@firstbuslondon.co.uk?subject=${encodeURIComponent("Officials Report")}&body=${encodeURIComponent("")}&attachment=${encodeURIComponent(fileUrl)}`;
     window.location.href = mailtoUrl;
 
     toast({
       title: "Report Sent",
-      description: "Your email client has been opened with the report details.",
+      description: "Your email client has been opened with the report attached.",
     });
   };
 
@@ -147,7 +161,7 @@ Generated on: ${new Date().toLocaleString()}`;
     const reportContent = createReportContent(formData);
     
     // Create filename with format: Date-Garage-Officials Report-EmployeeNumber
-    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const currentDate = format(new Date(), "yyyyMMdd"); // YYYYMMDD format
     const garageShortcut = getGarageShortcut(formData.garage || '');
     const employeeNumber = formData.employeeNumber || 'NoEmpNum';
     const filename = `${currentDate}-${garageShortcut}-Officials Report-${employeeNumber}.txt`;
