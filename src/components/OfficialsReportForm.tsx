@@ -119,13 +119,21 @@ This report was generated via the Officials Report Form
 Generated on: ${new Date().toLocaleString()}`;
   };
 
+  const getGarageShortcut = (garage: string) => {
+    const garageMap: { [key: string]: string } = {
+      "Fullwell": "FW",
+      "Hounslow": "AV", 
+      "Hounslow Heath": "WK",
+      "Tolworth": "TV"
+    };
+    return garageMap[garage] || garage;
+  };
+
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
     
-    const reportContent = createReportContent(data);
-    
-    // Use mailto to open default email client with pre-filled content
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent("Officials Report")}&body=${encodeURIComponent(reportContent)}`;
+    // Send email to specific address with blank body
+    const mailtoUrl = `mailto:FWOCC-HubLeaders@firstbuslondon.co.uk?subject=${encodeURIComponent("Officials Report")}`;
     window.location.href = mailtoUrl;
 
     toast({
@@ -138,6 +146,12 @@ Generated on: ${new Date().toLocaleString()}`;
     const formData = form.getValues();
     const reportContent = createReportContent(formData);
     
+    // Create filename with format: Date-Garage-Officials Report-EmployeeNumber
+    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const garageShortcut = getGarageShortcut(formData.garage || '');
+    const employeeNumber = formData.employeeNumber || 'NoEmpNum';
+    const filename = `${currentDate}-${garageShortcut}-Officials Report-${employeeNumber}.txt`;
+    
     // Create a blob with the report content
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
@@ -145,7 +159,7 @@ Generated on: ${new Date().toLocaleString()}`;
     // Create a temporary link element and trigger download
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Officials_Report_${formData.employeeName || 'Draft'}_${new Date().toISOString().split('T')[0]}.txt`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
