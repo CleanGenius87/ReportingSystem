@@ -54,7 +54,9 @@ const subjectOptions = [
   "Failing to follow instructions",
   "Delaying service",
   "Failing Headway",
-  "Attitude and demeanour"
+  "Attitude and demeanour",
+  "Driver error",
+  "Late departure"
 ];
 
 export function OfficialsReportForm() {
